@@ -31,7 +31,7 @@ df_scorers <- "data/scorers.csv" %>%
 df_pbp <- "data/pbp.csv" %>%
   readr::read_csv()
 
-df_chart_pbp_full <- df_match_data$pbp %>%
+df_chart_pbp_full <- df_pbp %>%
   dplyr::left_join(df_name) %>%
   dplyr::mutate(
     gt = lubridate::seconds(
@@ -430,7 +430,7 @@ shinyApp(
         geom_area(aes(y = lead, fill = win)) +
         geom_hline(yintercept = 0, color = "white") +
         scale_y_continuous(
-          limits = c(-1, 1) * max(abs(df_match_data$pbp$lead))
+          limits = c(-1, 1) * max(abs(df_pbp$lead))
         ) +
         ggplot2::scale_fill_manual(
           values = c(
@@ -490,7 +490,7 @@ shinyApp(
         mutate(subType = stringr::str_to_title(subType)) %>%
         arrange(code, player)
       
-      df_players <- df_match_data$pl %>%
+      df_players <- df_pl %>%
         filter(sMinutes != "0:00") %>%
         
         select(tno, name, captain, active, starter, sMinutes)
