@@ -8,9 +8,18 @@ library(fresh)
 library(patchwork)
 library(gt)
 
+list.files("src", full.names = TRUE) %>%
+  purrr::walk(source, encoding = "UTF-8")
 
 df_stats <- "data/general_stats.csv" %>%
   readr::read_csv()
+
+df_name <- df_stats %>%
+  dplyr::mutate(tno = dplyr::row_number()) %>%
+  dplyr::select(tno, code) %>%
+  mutate(
+    code = code %>% forcats::fct()
+  )
 
 df_pl <- "data/pl.csv" %>%
   readr::read_csv()
@@ -29,7 +38,12 @@ df_scorers <- "data/scorers.csv" %>%
 
 # pbp ----
 df_pbp <- "data/pbp.csv" %>%
-  readr::read_csv()
+  readr::read_csv(
+    col_types = list(
+      col_character(),
+      col_character()
+    )
+  )
 
 df_chart_pbp_full <- df_pbp %>%
   dplyr::left_join(df_name) %>%
@@ -248,7 +262,7 @@ shinyApp(
     
     output$general_stats <- gt::render_gt({
       
-      general_stats <- df_general_stats %>%
+      general_stats <- df_stats %>%
         dplyr::select(
           code, full_score, p1_score, p2_score, p3_score, p4_score,
           tot_sFieldGoalsMade, tot_sFieldGoalsPercentage,

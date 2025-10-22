@@ -402,6 +402,7 @@ In the `Points by Time` tab of the dashboard, you can see that GIN lost the game
     -   Optimize performance
     -   Adjust some proportions
     -   Fill empty space and better distribute graphic elements
+    -   Put loader on the slow charts
 
 ## 3) Design: create a visual identity
 
