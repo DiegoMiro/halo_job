@@ -3,6 +3,7 @@ library(shiny)
 library(htmltools)
 library(bs4Dash)
 library(shinyWidgets)
+library(shinycssloaders)
 library(fresh)
 
 library(patchwork)
@@ -224,7 +225,9 @@ shinyApp(
               title = "Points by time",
               bslib::card_body(
                 height = "75vh",
-                shiny::plotOutput("chart_points_by_time")
+                shinycssloaders::withSpinner(
+                  shiny::plotOutput("chart_points_by_time")
+                )
               )
             )
           )
