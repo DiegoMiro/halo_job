@@ -41,8 +41,8 @@ df_scorers <- "data/scorers.csv" %>%
 df_pbp <- "data/pbp.csv" %>%
   readr::read_csv(
     col_types = list(
-      col_character(),
-      col_character()
+      readr::col_character(),
+      readr::col_character()
     )
   )
 
@@ -333,56 +333,64 @@ shinyApp(
     
     output$chart_points_by_time <- shiny::renderPlot({
       
-      df_zero_sequence_s1 <- df_chart_pbp %>%
-        dplyr::select(s1) %>%
-        mutate(d = c(0L, diff(s1))) %>%
-        select(d) %>%
-        fun_find_zero_sequence()
+      # df_zero_sequence_s1 <- df_chart_pbp %>%
+      #   dplyr::select(s1) %>%
+      #   mutate(d = c(0L, diff(s1))) %>%
+      #   select(d) %>%
+      #   fun_find_zero_sequence()
+      # 
+      # df_chart_pbp_zero_sequence_s1 <- df_zero_sequence_s1 %>%
+      #   dplyr::filter(
+      #     flg == 0,
+      #     sequence_size == sequence_count_zero
+      #   ) %>%
+      #   dplyr::select(sequence) %>%
+      #   tidyr::unnest(cols = sequence) %>%
+      #   dplyr::arrange(sequence) %>%
+      #   dplyr::left_join(
+      #     df_chart_pbp %>%
+      #       tibble::rowid_to_column(var = "sequence")
+      #   ) %>%
+      #   dplyr::mutate(tno = 1L) %>%
+      #   dplyr::select(tno, gt_date, value = s1)
+      # 
+      # 
+      # 
+      # df_zero_sequence_s2 <- df_chart_pbp %>%
+      #   dplyr::select(s2) %>%
+      #   mutate(d = c(0L, diff(s2))) %>%
+      #   select(d) %>%
+      #   fun_find_zero_sequence()
+      # 
+      # df_chart_pbp_zero_sequence_s2 <- df_zero_sequence_s2 %>%
+      #   dplyr::filter(
+      #     flg == 0,
+      #     sequence_size == sequence_count_zero
+      #   ) %>%
+      #   dplyr::select(sequence) %>%
+      #   tidyr::unnest(cols = sequence) %>%
+      #   dplyr::arrange(sequence) %>%
+      #   dplyr::left_join(
+      #     df_chart_pbp %>%
+      #       tibble::rowid_to_column(var = "sequence")
+      #   ) %>%
+      #   dplyr::mutate(tno = 2L) %>%
+      #   dplyr::select(tno, gt_date, value = s2)
+      # 
+      # 
+      # 
+      # df_chart_pbp_zero_sequence <- dplyr::bind_rows(
+      #   df_chart_pbp_zero_sequence_s1, df_chart_pbp_zero_sequence_s2
+      # ) %>%
+      #   dplyr::left_join(df_name)
       
-      df_chart_pbp_zero_sequence_s1 <- df_zero_sequence_s1 %>%
-        dplyr::filter(
-          flg == 0,
-          sequence_size == sequence_count_zero
-        ) %>%
-        dplyr::select(sequence) %>%
-        tidyr::unnest(cols = sequence) %>%
-        dplyr::arrange(sequence) %>%
-        dplyr::left_join(
-          df_chart_pbp %>%
-            tibble::rowid_to_column(var = "sequence")
-        ) %>%
-        dplyr::mutate(tno = 1L) %>%
-        dplyr::select(tno, gt_date, value = s1)
       
-      
-      
-      df_zero_sequence_s2 <- df_chart_pbp %>%
-        dplyr::select(s2) %>%
-        mutate(d = c(0L, diff(s2))) %>%
-        select(d) %>%
-        fun_find_zero_sequence()
-      
-      df_chart_pbp_zero_sequence_s2 <- df_zero_sequence_s2 %>%
-        dplyr::filter(
-          flg == 0,
-          sequence_size == sequence_count_zero
-        ) %>%
-        dplyr::select(sequence) %>%
-        tidyr::unnest(cols = sequence) %>%
-        dplyr::arrange(sequence) %>%
-        dplyr::left_join(
-          df_chart_pbp %>%
-            tibble::rowid_to_column(var = "sequence")
-        ) %>%
-        dplyr::mutate(tno = 2L) %>%
-        dplyr::select(tno, gt_date, value = s2)
-      
-      
-      
-      df_chart_pbp_zero_sequence <- dplyr::bind_rows(
-        df_chart_pbp_zero_sequence_s1, df_chart_pbp_zero_sequence_s2
-      ) %>%
+      df_chart_pbp_zero_sequence_2 <- c("s1", "s2") %>%
+        purrr::map(\(x) fun_find_zero_sequence_v2(df_chart_pbp, x)) %>%
+        purrr::list_rbind() %>%
         dplyr::left_join(df_name)
+        
+      
       
       
       df_chart_pbp_1 <- df_chart_pbp %>%
