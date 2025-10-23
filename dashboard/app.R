@@ -385,7 +385,7 @@ shinyApp(
       #   dplyr::left_join(df_name)
       
       
-      df_chart_pbp_zero_sequence_2 <- c("s1", "s2") %>%
+      df_chart_pbp_zero_sequence <- c("s1", "s2") %>%
         purrr::map(\(x) fun_find_zero_sequence_v2(df_chart_pbp, x)) %>%
         purrr::list_rbind() %>%
         dplyr::left_join(df_name)
