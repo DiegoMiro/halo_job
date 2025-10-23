@@ -52,3 +52,24 @@ fun_find_zero_sequence <- function(df_diff) {
   return(df_sequence)
   
 }
+
+fun_find_zero_sequence_v2 <- function(df_chart_pbp, var_name) {
+  
+  df_chart_pbp %>%
+    dplyr::rename(value := {{var_name}}) %>%
+    dplyr::mutate(d = c(0L, diff(value))) %>%
+    dplyr::select(gt_date, value, d) %>%
+    dplyr::mutate(flg_accum = cumsum(as.integer(d != 0))) %>%
+    dplyr::filter(d == 0) %>%
+    dplyr::select(flg_accum, gt_date, value) %>%
+    tidyr::nest(.by = flg_accum) %>%
+    dplyr::filter(purrr::map_int(data, nrow) >= 3) %>%
+    dplyr::select(data) %>%
+    tidyr::unnest(cols = data) %>%
+    dplyr::mutate(
+      tno = var_name %>%
+        stringr::str_extract("\\d") %>%
+        as.integer(),
+      .before = 1
+    )
+}
